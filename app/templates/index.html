@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Recommendation</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        /* Main Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4; /* Light background */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff; /* White background for content */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            padding: 30px; /* Padding around the container */
+        }
+
+        h1 {
+            text-align: center; /* Center the main title */
+            color: #2c3e50; /* Darker color for headings */
+        }
+
+        /* Form Styles */
+        form {
+            margin-bottom: 30px; /* Space below the form */
+        }
+
+        label {
+            display: block; /* Block display for labels */
+            margin: 10px 0 5px; /* Spacing around labels */
+            font-weight: bold; /* Bold labels */
+        }
+
+        input[type="number"] {
+            width: 100%; /* Full-width input fields */
+            padding: 10px; /* Padding inside inputs */
+            border: 1px solid #ccc; /* Border for inputs */
+            border-radius: 5px; /* Rounded corners */
+            margin-bottom: 15px; /* Space below inputs */
+        }
+
+        /* Button Styles */
+        button {
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            border: none; /* Remove default border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px 20px; /* Padding around button */
+            font-size: 16px; /* Button font size */
+            cursor: pointer; /* Pointer cursor */
+            transition: background-color 0.3s; /* Smooth transition */
+            display: block; /* Center the button */
+            margin: 0 auto; /* Auto margin for horizontal centering */
+        }
+
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        /* Disease List Styles */
+        h2 {
+            color: #4CAF50; /* Green color for subheadings */
+            border-bottom: 2px solid #4CAF50; /* Bottom border */
+            padding-bottom: 5px; /* Space below headings */
+        }
+
+        ul {
+            list-style-type: none; /* Remove bullet points */
+            padding: 0; /* Remove padding */
+        }
+
+        li {
+            margin: 10px 0; /* Space between list items */
+            font-size: 18px; /* Font size for list items */
+        }
+
+        /* Food Recommendation Section */
+        .food-section {
+            margin-top: 20px; /* Space above the food section */
+        }
+
+        .food-images {
+            margin-bottom: 30px; /* Space below each category */
+            border: 1px solid #ddd; /* Border around the food images section */
+            border-radius: 8px; /* Rounded corners */
+            padding: 15px; /* Padding around the section */
+            background-color: #f9f9f9; /* Light background color */
+        }
+
+        .food-images h3 {
+            border-bottom: 2px solid #4CAF50; /* Bottom border for category titles */
+            padding-bottom: 5px; /* Spacing between title and images */
+            color: #4CAF50; /* Green color for category titles */
+        }
+
+        .images {
+            display: flex; /* Use flexbox to align images in a row */
+            flex-wrap: wrap; /* Allow images to wrap to the next line */
+            gap: 20px; /* Space between images */
+        }
+
+        .image-block {
+            flex: 0 1 150px; /* Adjust size of each image block */
+            text-align: center; /* Center the text below images */
+            transition: transform 0.2s; /* Smooth hover effect */
+        }
+
+        .image-block img {
+            width: 150px; /* Set a fixed width for images */
+            height: 150px; /* Set a fixed height for images */
+            object-fit: cover; /* Ensure the image covers the area */
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+        }
+
+        .image-block:hover {
+            transform: scale(1.05); /* Slightly enlarge image on hover */
+        }
+
+        .image-block p {
+            margin-top: 5px; /* Space between image and text */
+            font-weight: bold; /* Make food item names bold */
+            color: #333; /* Dark color for text */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Medical Report Input</h1>
+        <form method="post" action="/predict">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="gender">Gender (0 = Female, 1 = Male):</label>
+            <input type="number" id="gender" name="gender" required>
+
+            <label for="bp">Blood Pressure:</label>
+            <input type="number" id="bp" name="bp" required>
+
+            <label for="cholesterol">Cholesterol:</label>
+            <input type="number" id="cholesterol" name="cholesterol" required>
+
+            <label for="heart_rate">Heart Rate:</label>
+            <input type="number" id="heart_rate" name="heart_rate" required>
+
+            <label for="glucose">Glucose:</label>
+            <input type="number" id="glucose" name="glucose" required>
+
+            <label for="insulin">Insulin:</label>
+            <input type="number" id="insulin" name="insulin" required>
+
+            <label for="bmi">BMI:</label>
+            <input type="number" id="bmi" name="bmi" required>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        {% if predicted_diseases %}
+        <h2>Predicted Diseases</h2>
+        <ul>
+            {% for disease, score in predicted_diseases.items() %}
+                <li>{{ disease }}: {{ (score * 100) | round(2) }}%</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Food Recommendations</h2>
+        <div class="food-section">
+            {% for category, items in food_recommendations.items() %}
+                {% if 'g' in category %}
+                    <h3>{{ category }}: {{ items }}g</h3>
+                {% else %}
+                    <div class="food-images">
+                        <h3>{{ category }}</h3>
+                        <div class="images">
+                            {% for food_item in items.split(', ') %}
+                                {% if food_item != 'N/A' %} <!-- Skip N/A items -->
+                                    <div class="image-block">
+                                        <img src="/static/images/{{ category }}/{{ food_item }}.jpg" alt="{{ food_item }}" onerror="this.onerror=null; this.src='/static/images/{{ category }}/{{ food_item }}.png';">
+                                        <p>{{ food_item }}</p>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

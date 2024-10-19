@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.food-section {
+    margin-top: 20px;
+}
+
+.food-images {
+    margin-bottom: 30px;
+}
+
+.images {
+    display: flex; /* Use flexbox to align images in a row */
+    flex-wrap: wrap; /* Allow images to wrap to the next line */
+    gap: 20px; /* Space between images */
+}
+
+.image-block {
+    flex: 0 1 150px; /* Adjust size of each image block */
+    text-align: center; /* Center the text below images */
+}
+
+.image-block img {
+    width: 150px; /* Set a fixed width for images */
+    height: 150px; /* Set a fixed height for images */
+    object-fit: cover; /* Ensure the image covers the area */
+    border-radius: 5px; /* Optional: add rounded corners */
+}
